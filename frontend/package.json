@@ -34,5 +34,6 @@
     "eslint-plugin-react-refresh": "^0.5.2",
     "globals": "^17.4.0",
     "vite": "^8.0.0"
-  }
+  },
+  "dev": "concurrently \"npm run dev --prefix frontend\" \"npm run dev --prefix backend\""
 }
