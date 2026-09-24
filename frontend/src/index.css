@@ -1,0 +1,147 @@
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --primary: #0077ff;
+    --secondary: #ff0033;
+    --accent: #00f7ff;
+    --gold: #d4af37;
+    --obsidian: #050505;
+  }
+
+  body {
+    @apply bg-[#050505] text-gray-200 font-sans antialiased overflow-x-hidden;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    @apply font-cormorant text-gold;
+  }
+}
+
+@layer components {
+  .glass-card {
+    @apply bg-white/[0.05] border border-white/10 rounded-[40px] shadow-2xl;
+  }
+
+  .bg-grid-white {
+    background-image: radial-gradient(circle, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+    background-size: 30px 30px;
+  }
+
+  .btn-primary {
+    @apply bg-gradient-to-r from-gold-dark via-gold to-gold-light text-dark font-bold py-3 px-8 rounded-full transition-transform transform hover:scale-105 hover:shadow-lg hover:shadow-gold/20 duration-300;
+  }
+
+  .btn-secondary {
+    @apply bg-transparent border border-gold text-gold font-bold py-3 px-8 rounded-full transition-colors duration-300 hover:bg-gold hover:text-dark;
+  }
+
+  .input-field {
+    @apply w-full bg-dark border border-gray-700 rounded-lg px-4 py-3 text-gray-200 focus:outline-none focus:border-gold focus:ring-1 focus:ring-gold transition-colors duration-300;
+  }
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f7f4f4;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #fffdfd;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #d4af37;
+}
+
+/* High-End Animated Card Wrapper */
+.animated-card-wrapper {
+  position: relative;
+  overflow: hidden;
+  border-radius: 24px;
+  padding: 2px;
+  background: rgba(251, 249, 249, 0.03);
+  transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+  display: flex;
+  align-items: stretch;
+}
+
+.animated-card-wrapper::before {
+  content: "";
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: conic-gradient(transparent,
+      var(--primary),
+      var(--accent),
+      var(--gold),
+      var(--secondary),
+      transparent 80%);
+  animation: border-rotate 6s linear infinite;
+  opacity: 0.15;
+  transition: opacity 0.5s;
+}
+
+.animated-card-wrapper:hover::before {
+  opacity: 1;
+}
+
+.animated-card-wrapper:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4), 0 0 20px rgba(212, 175, 55, 0.1);
+}
+
+.animated-card-inner {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  background: #fefafa;
+  border-radius: 22px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+@keyframes border-rotate {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+
+/* Marquee Animation */
+@keyframes marquee {
+  0% {
+    transform: translateX(0);
+  }
+
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.animate-marquee {
+  display: flex;
+  white-space: nowrap;
+  animation: marquee 30s linear infinite;
+}
