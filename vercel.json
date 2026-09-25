@@ -1,6 +1,6 @@
 {
-  "installCommand": "npm install --include=dev && npm install --include=dev --prefix frontend",
-  "buildCommand": "npm run build --prefix frontend",
+  "installCommand": "npm install --include=dev",
+  "buildCommand": "cd frontend && npx vite build",
   "outputDirectory": "frontend/dist",
   "rewrites": [
     {
