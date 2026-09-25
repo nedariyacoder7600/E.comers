@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useContext } from 'react';
+import React, { useEffect, useState, useContext, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import { FiPackage, FiClock, FiCheckCircle, FiTruck, FiXCircle, FiArrowLeft } from 'react-icons/fi';
 import { ShopContext } from '../context/ShopContext';
@@ -11,12 +11,11 @@ const Orders = () => {
   const { token, userData } = useContext(ShopContext);
   const navigate = useNavigate();
 
-  const fetchOrders = async () => {
+  const fetchOrders = useCallback(async () => {
     try {
       setLoading(true);
-      const response = await axios.get(`http://localhost:5000/api/orders?t=${new Date().getTime()}`);
+      const response = await axios.get(`/api/orders?t=${new Date().getTime()}`);
       if (response.data.success) {
-        // Filter orders based on the current user's ID
         const userOrders = response.data.orders.filter(order => order.user === userData?._id);
         setOrders(userOrders);
       }
@@ -25,7 +24,7 @@ const Orders = () => {
       console.error("Error fetching orders", error);
       setLoading(false);
     }
-  };
+  }, [userData?._id]);
 
   useEffect(() => {
     let interval;
@@ -33,10 +32,10 @@ const Orders = () => {
       navigate('/login');
     } else {
       fetchOrders();
-      interval = setInterval(fetchOrders, 5000); // 5 sec poll
+      interval = setInterval(fetchOrders, 5000);
     }
     return () => { if (interval) clearInterval(interval); }
-  }, [token, userData]);
+  }, [token, navigate, fetchOrders]);
 
   const getStatusIcon = (status) => {
     switch (status) {

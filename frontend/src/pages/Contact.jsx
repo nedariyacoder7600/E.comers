@@ -5,7 +5,7 @@ import axios from 'axios';
 import { toast } from 'react-toastify';
 
 const Contact = () => {
-  const [formState, setFormState] = useState('idle'); // 'idle' | 'sending' | 'sent'
+  const [formState, setFormState] = useState('idle');
   const [copiedField, setCopiedField] = useState(null);
   const [formData, setFormData] = useState({
     name: '',
@@ -43,7 +43,7 @@ const Contact = () => {
     setFormState('sending');
 
     try {
-      const response = await axios.post('http://localhost:5000/api/contact', formData);
+      const response = await axios.post('/api/contact', formData);
       if (response.data.success) {
         setFormState('sent');
         toast.success("Message sent successfully!");
@@ -61,10 +61,10 @@ const Contact = () => {
   return (
     <div className="min-h-screen bg-[#f8fafc] text-gray-800 font-sans flex flex-col justify-center items-center py-12 px-4 relative overflow-hidden">
       
-      {/* 🌟 AMBIENT BACKDROP GLOW */}
+      {/* AMBIENT BACKDROP GLOW */}
       <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[600px] h-[400px] bg-gradient-to-tr from-teal-200/30 via-emerald-100/40 to-sky-200/30 blur-[130px] rounded-full pointer-events-none" />
 
-      {/* 📦 MEDIUM SIZED CARD CONTAINER */}
+      {/* CONTAINER */}
       <motion.div
         initial={{ opacity: 0, y: 25 }}
         animate={{ opacity: 1, y: 0 }}
@@ -72,7 +72,6 @@ const Contact = () => {
         className="w-full max-w-lg bg-white/95 backdrop-blur-md rounded-3xl border border-gray-100 shadow-2xl shadow-gray-200/80 p-6 md:p-8 flex flex-col max-h-[580px] relative z-10"
       >
         
-        {/* 📜 SMOOTH SCROLLABLE CONTAINER WITH CUSTOM SCROLLBAR */}
         <div className="overflow-y-auto pr-2 flex-1 scrollbar-thin scrollbar-thumb-gray-200 hover:scrollbar-thumb-[#00897b]/40 scrollbar-track-transparent space-y-5">
           <AnimatePresence mode="wait">
             {formState !== 'sent' ? (
@@ -82,7 +81,6 @@ const Contact = () => {
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
               >
-                {/* 🟢 TOP BADGE & LIVE STATUS */}
                 <div className="flex flex-col items-center mb-4">
                   <div className="w-13 h-13 bg-gradient-to-tr from-[#00796b] to-[#00897b] rounded-2xl flex items-center justify-center text-white shadow-lg shadow-[#00897b]/20 mb-3 ring-4 ring-[#00897b]/10">
                     <FiMail className="w-6 h-6" />
@@ -101,10 +99,8 @@ const Contact = () => {
                   </p>
                 </div>
 
-                {/* 📝 FORM */}
                 <form onSubmit={handleSubmit} className="space-y-4">
                   
-                  {/* CATEGORY SELECTOR CHIPS */}
                   <div>
                     <label className="block text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-2">
                       INQUIRY CATEGORY <span className="text-emerald-600">*</span>
@@ -128,7 +124,6 @@ const Contact = () => {
                     </div>
                   </div>
 
-                  {/* NAME FIELD */}
                   <div>
                     <label className="block text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-1">
                       FULL NAME <span className="text-red-500">*</span>
@@ -147,7 +142,6 @@ const Contact = () => {
                     </div>
                   </div>
 
-                  {/* EMAIL FIELD */}
                   <div>
                     <label className="block text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-1">
                       EMAIL ADDRESS <span className="text-red-500">*</span>
@@ -166,7 +160,6 @@ const Contact = () => {
                     </div>
                   </div>
 
-                  {/* PHONE FIELD */}
                   <div>
                     <label className="block text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-1">
                       PHONE NUMBER <span className="text-red-500">*</span>
@@ -185,7 +178,6 @@ const Contact = () => {
                     </div>
                   </div>
 
-                  {/* MESSAGE FIELD */}
                   <div>
                     <div className="flex justify-between items-center mb-1">
                       <label className="block text-[10px] font-bold text-gray-500 uppercase tracking-wider">
@@ -210,7 +202,6 @@ const Contact = () => {
                     </div>
                   </div>
 
-                  {/* CHECKBOX */}
                   <div className="flex items-center gap-2 pt-1 pb-1">
                     <input
                       type="checkbox"
@@ -225,7 +216,6 @@ const Contact = () => {
                     </label>
                   </div>
 
-                  {/* SUBMIT BUTTON */}
                   <button
                     type="submit"
                     disabled={formState !== 'idle'}
@@ -290,7 +280,7 @@ const Contact = () => {
         </div>
       </motion.div>
 
-      {/* 📍 BOTTOM QUICK INTERACTIVE CONTACT STRIP */}
+      {/* QUICK CONTACT STRIP */}
       <div className="mt-8 flex flex-wrap items-center justify-center gap-3 text-xs z-10">
         <button
           onClick={() => handleCopy('support@luxehookah.com', 'Email')}
@@ -321,10 +311,3 @@ const Contact = () => {
 };
 
 export default Contact;
-
-
-
-
-
-
-

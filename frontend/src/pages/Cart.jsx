@@ -7,14 +7,14 @@ import axios from 'axios';
 import { toast } from 'react-toastify';
 
 const Cart = () => {
-  const { cartItems, updateQuantity, getCartAmount, token, userData, clearCart, setToken, setUserData } = useContext(ShopContext);
+  const { cartItems, updateQuantity, getCartAmount, token, userData, clearCart } = useContext(ShopContext);
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
   const fetchProducts = async () => {
     try {
-      const response = await axios.get('http://localhost:5000/api/products');
+      const response = await axios.get('/api/products');
       if (response.data.success) {
         setProducts(response.data.products);
       }
@@ -30,7 +30,7 @@ const Cart = () => {
   }, []);
 
   const cartData = Object.entries(cartItems)
-    .filter(([_, qty]) => qty > 0)
+    .filter(([, qty]) => qty > 0)
     .map(([id, qty]) => {
       const product = products.find(p => p._id === id || p.id === id);
       return product ? { ...product, quantity: qty } : null;
@@ -71,7 +71,6 @@ const Cart = () => {
     try {
       const totalAmount = getCartAmount(products);
       
-      // 1. Create local order
       const orderData = {
         user: userData?._id,
         products: cartData.map(item => ({ product: item._id || item.id, quantity: item.quantity })),
@@ -81,7 +80,7 @@ const Cart = () => {
         paymentStatus: 'Pending'
       };
 
-      const orderResponse = await axios.post('http://localhost:5000/api/orders', orderData, {
+      const orderResponse = await axios.post('/api/orders', orderData, {
         headers: { Authorization: `Bearer ${token}` }
       });
 
@@ -91,8 +90,7 @@ const Cart = () => {
 
       const localOrderId = orderResponse.data.order._id;
 
-      // 2. Create Razorpay order
-      const rzpResponse = await axios.post('http://localhost:5000/api/orders/razorpay', { amount: totalAmount }, {
+      const rzpResponse = await axios.post('/api/orders/razorpay', { amount: totalAmount }, {
         headers: { Authorization: `Bearer ${token}` }
       });
 
@@ -102,14 +100,13 @@ const Cart = () => {
 
       const rzpOrder = rzpResponse.data.order;
 
-      // 3. Open Razorpay Modal
       const options = {
-        key: "rzp_test_Sq7Q13RMFEZr5f", // Updated with your new Razorpay Key ID
+        key: "rzp_test_Sq7Q13RMFEZr5f",
         amount: rzpOrder.amount,
         currency: rzpOrder.currency,
         name: "Luxe Sensory Vault",
         description: "Premium Order Payment",
-        image: "https://cdn-icons-png.flaticon.com/512/3135/3135715.png", // Professional Icon
+        image: "https://cdn-icons-png.flaticon.com/512/3135/3135715.png",
         order_id: rzpOrder.id,
         handler: async (response) => {
           try {
@@ -120,7 +117,7 @@ const Cart = () => {
               orderId: localOrderId
             };
 
-            const verifyRes = await axios.post('http://localhost:5000/api/orders/verify', verifyData, {
+            const verifyRes = await axios.post('/api/orders/verify', verifyData, {
               headers: { Authorization: `Bearer ${token}` }
             });
 
@@ -146,7 +143,7 @@ const Cart = () => {
           address: `${shippingInfo.street}, ${shippingInfo.city}`
         },
         theme: {
-          color: "#D4AF37", // Matching your Gold luxury theme
+          color: "#D4AF37",
           backdrop_color: "#000000"
         },
         config: {
@@ -278,21 +275,21 @@ const Cart = () => {
                       <div className="flex items-center gap-4">
                         <div className="flex items-center bg-black/40 border border-white/10 rounded-xl overflow-hidden shadow-inner">
                           <button 
-                            onClick={() => updateQuantity(item._id || item.id, (item.quantity || 1) - 1)}
+                            onClick={(e) => { e.stopPropagation(); updateQuantity(item._id || item.id, (item.quantity || 1) - 1); }}
                             className="p-2 hover:bg-gold/10 text-gray-400 hover:text-gold transition-colors"
                           >
                             <FiMinus size={14} />
                           </button>
                           <span className="w-8 text-center text-xs font-bold text-white font-mono">{item.quantity}</span>
                           <button 
-                            onClick={() => updateQuantity(item._id || item.id, (item.quantity || 1) + 1)}
+                            onClick={(e) => { e.stopPropagation(); updateQuantity(item._id || item.id, (item.quantity || 1) + 1); }}
                             className="p-2 hover:bg-gold/10 text-gray-400 hover:text-gold transition-colors"
                           >
                             <FiPlus size={14} />
                           </button>
                         </div>
                         <button 
-                          onClick={() => updateQuantity(item._id || item.id, 0)}
+                          onClick={(e) => { e.stopPropagation(); updateQuantity(item._id || item.id, 0); }}
                           className="text-gray-500 hover:text-red-500 transition-colors p-2"
                         >
                           <FiTrash2 size={16} />

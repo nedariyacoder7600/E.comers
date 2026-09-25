@@ -1,12 +1,12 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { FiSearch, FiShoppingCart, FiUser, FiHeart, FiMenu, FiX, FiLogOut, FiBox, FiList, FiPlus, FiChevronDown } from 'react-icons/fi';
+import { FiSearch, FiShoppingCart, FiUser, FiHeart, FiMenu, FiX, FiLogOut, FiBox, FiList } from 'react-icons/fi';
 import { GiSmokingPipe } from 'react-icons/gi';
 import { ShopContext } from '../context/ShopContext';
 
 const Navbar = () => {
-  const { search, setSearch, showSearch, setShowSearch, getCartCount, token, setToken } = useContext(ShopContext);
+  const { search, setSearch, getCartCount, token, setToken } = useContext(ShopContext);
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
@@ -14,13 +14,13 @@ const Navbar = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
-  // Real data from Context
   const cartCount = getCartCount();
-  const wishlistCount = 1; // Keeping wishlist mock for now as it's not requested
+  const wishlistCount = 1;
   const isAuthenticated = !!token;
 
   const handleLogout = () => {
     localStorage.removeItem('token');
+    localStorage.removeItem('userData');
     setToken('');
     navigate('/login');
   };
@@ -37,7 +37,7 @@ const Navbar = () => {
     setIsMobileMenuOpen(false);
     setIsSearchOpen(false);
     setIsProfileOpen(false);
-  }, [location]);
+  }, [location.pathname]);
 
   const navLinks = [
     { name: 'Home', path: '/' },
@@ -131,7 +131,7 @@ const Navbar = () => {
             </div>
 
             {/* Wishlist */}
-            <Link to="/wishlist" className="relative text-gray-300 hover:text-gold transition-colors duration-300 p-2 hover:drop-shadow-[0_0_8px_rgba(212,175,55,0.8)] group">
+            <Link to="/all" className="relative text-gray-300 hover:text-gold transition-colors duration-300 p-2 hover:drop-shadow-[0_0_8px_rgba(212,175,55,0.8)] group">
               <motion.div whileHover={{ scale: 1.1 }}>
                 <FiHeart className="text-xl" />
                 {wishlistCount > 0 && (
@@ -277,7 +277,7 @@ const Navbar = () => {
 
               {/* Mobile Bottom Actions */}
               <div className="flex flex-col space-y-1">
-                <Link to="/wishlist" className="flex items-center gap-4 text-gray-400 hover:text-gold py-3 px-2 rounded-lg hover:bg-gold/5 transition-all">
+                <Link to="/all" className="flex items-center gap-4 text-gray-400 hover:text-gold py-3 px-2 rounded-lg hover:bg-gold/5 transition-all">
                   <FiHeart className="text-xl" />
                   <span className="tracking-wider uppercase text-sm">Wishlist ({wishlistCount})</span>
                 </Link>

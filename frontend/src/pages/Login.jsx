@@ -1,7 +1,7 @@
 import React, { useState, useContext } from 'react';
 import { motion } from 'framer-motion';
 import { Link, useNavigate } from 'react-router-dom';
-import { FiMail, FiLock, FiArrowRight, FiUser } from 'react-icons/fi';
+import { FiMail, FiLock, FiArrowRight } from 'react-icons/fi';
 import { GiSmokingPipe } from 'react-icons/gi';
 import { toast } from 'react-toastify';
 import { ShopContext } from '../context/ShopContext';
@@ -15,7 +15,7 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post('http://localhost:5000/api/auth/login', formData);
+      const response = await axios.post('/api/auth/login', formData);
       if (response.data.success) {
         localStorage.setItem('token', response.data.token);
         localStorage.setItem('userData', JSON.stringify(response.data.user));

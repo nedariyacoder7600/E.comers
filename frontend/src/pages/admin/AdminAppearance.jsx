@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { FiSave, FiImage, FiType, FiArrowLeft, FiPlus, FiTrash2, FiUploadCloud } from 'react-icons/fi';
+import { FiSave, FiImage, FiType, FiArrowLeft, FiTrash2, FiUploadCloud } from 'react-icons/fi';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 import { toast } from 'react-toastify';
@@ -27,7 +27,7 @@ const AdminAppearance = () => {
   const fetchConfig = async (pageId) => {
     setLoading(true);
     try {
-      const response = await axios.get(`http://localhost:5000/api/page-config/${pageId}`);
+      const response = await axios.get(`/api/page-config/${pageId}`);
       if (response.data.config) {
         setConfig(response.data.config);
       } else {
@@ -35,6 +35,7 @@ const AdminAppearance = () => {
       }
       setLoading(false);
     } catch (error) {
+      console.error(error);
       toast.error('Failed to load portal configuration.');
       setLoading(false);
     }
@@ -53,7 +54,7 @@ const AdminAppearance = () => {
 
     try {
       toast.info('Synchronizing visual vector...');
-      const res = await axios.post('http://localhost:5000/api/upload', formData, {
+      const res = await axios.post('/api/upload', formData, {
         headers: { 'Content-Type': 'multipart/form-data' }
       });
       
@@ -80,9 +81,10 @@ const AdminAppearance = () => {
 
   const handleSave = async () => {
     try {
-      await axios.post('http://localhost:5000/api/page-config', config);
+      await axios.post('/api/page-config', config);
       toast.success(`${activePage.toUpperCase()} synchronized with core node.`);
     } catch (error) {
+      console.error(error);
       toast.error('Synchronization failed.');
     }
   };
@@ -175,7 +177,7 @@ const AdminAppearance = () => {
                       <div className="flex-grow flex gap-4 items-center w-full">
                          <div className="relative flex-grow">
                            <input className="w-full bg-[#111] border border-white/5 rounded-xl py-3 pl-4 pr-16 text-[10px] focus:border-gold outline-none" value={bannerImg} onChange={(e) => updateBanner(index, 'img', e.target.value)} placeholder="Image URL" />
-                           {bannerImg && <img src={bannerImg} className="absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full object-cover border border-white/10" />}
+                           {bannerImg && <img src={bannerImg} className="absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full object-cover border border-white/10" alt="" />}
                          </div>
                          <label className="p-3 bg-gold/10 text-gold border border-gold/20 rounded-xl hover:bg-gold hover:text-black cursor-pointer">
                            <FiUploadCloud size={18} /><input type="file" className="hidden" onChange={(e) => handleUpload(e, 'banner', index)} accept="image/*" />
@@ -203,7 +205,7 @@ const AdminAppearance = () => {
                         <div className="flex-grow flex gap-4 items-center w-full">
                            <div className="relative flex-grow">
                              <input className="w-full bg-[#111] border border-white/5 rounded-xl py-3 pl-4 pr-16 text-[10px] focus:border-gold outline-none" value={cat.img} onChange={(e) => updateCategory(index, 'img', e.target.value)} placeholder="Image URL" />
-                             {cat.img && <img src={cat.img} className="absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full object-cover border border-white/10" />}
+                             {cat.img && <img src={cat.img} className="absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full object-cover border border-white/10" alt="" />}
                            </div>
                            <label className="p-3 bg-gold/10 text-gold border border-gold/20 rounded-xl hover:bg-gold hover:text-black cursor-pointer">
                              <FiUploadCloud size={18} /><input type="file" className="hidden" onChange={(e) => handleUpload(e, 'category', index)} accept="image/*" />

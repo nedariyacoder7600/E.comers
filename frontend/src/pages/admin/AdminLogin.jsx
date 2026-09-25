@@ -16,7 +16,7 @@ const AdminLogin = () => {
     e.preventDefault();
     setLoading(true);
     try {
-      const response = await axios.post('http://localhost:5000/api/auth/admin-otp', { email, password });
+      const response = await axios.post('/api/auth/admin-otp', { email, password });
       if (response.data.success) {
         setShowOtp(true);
         toast.success(response.data.message);
@@ -32,7 +32,7 @@ const AdminLogin = () => {
     e.preventDefault();
     setLoading(true);
     try {
-      const response = await axios.post('http://localhost:5000/api/auth/admin-login-verify', { email, otp });
+      const response = await axios.post('/api/auth/admin-login-verify', { email, otp });
       if (response.data.success) {
         localStorage.setItem('adminToken', response.data.token);
         toast.success('Neural Link Established.');

@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
-  FiPieChart, FiShoppingBag, FiUsers, FiBox, 
-  FiMoreVertical, FiSearch, FiBell, FiLogOut, 
-  FiLayout, FiChevronDown, FiEdit3, FiTrash2,
-  FiEye, FiFilter, FiRefreshCw, FiClock, FiTruck, FiCheckCircle
+  FiPieChart, FiShoppingBag, FiBox, 
+  FiSearch, FiLogOut, 
+  FiLayout, FiChevronDown, FiTrash2,
+  FiEye, FiRefreshCw, FiClock, FiTruck, FiCheckCircle
 } from 'react-icons/fi';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
@@ -19,7 +19,7 @@ const AdminOrders = () => {
   const fetchOrders = async () => {
     try {
       setLoading(true);
-      const response = await axios.get('http://localhost:5000/api/orders');
+      const response = await axios.get('/api/orders');
       if (response.data.success) {
         setOrders(response.data.orders);
       }
@@ -37,12 +37,13 @@ const AdminOrders = () => {
 
   const updateOrderStatus = async (orderId, newStatus) => {
     try {
-      const response = await axios.put(`http://localhost:5000/api/orders/${orderId}`, { orderStatus: newStatus });
+      const response = await axios.put(`/api/orders/${orderId}`, { orderStatus: newStatus });
       if (response.data.success) {
         setOrders(prev => prev.map(order => order._id === orderId ? { ...order, orderStatus: newStatus } : order));
         toast.success(`Status: ${newStatus}`, { theme: "dark" });
       }
     } catch (error) {
+       console.error(error);
        toast.error("Status update failed.");
     }
   };
@@ -50,12 +51,13 @@ const AdminOrders = () => {
   const deleteOrder = async (orderId) => {
     if (!window.confirm("Purge this transmission?")) return;
     try {
-      const response = await axios.delete(`http://localhost:5000/api/orders/${orderId}`);
+      const response = await axios.delete(`/api/orders/${orderId}`);
       if (response.data.success) {
         setOrders(prev => prev.filter(order => order._id !== orderId));
         toast.success("Order deleted.");
       }
     } catch (error) {
+      console.error(error);
       toast.error("Delete failed.");
     }
   };
@@ -68,7 +70,7 @@ const AdminOrders = () => {
   return (
     <div className="flex min-h-screen bg-[#050505] text-gray-100 font-sans">
       
-      {/* Sidebar - Responsive Design */}
+      {/* Sidebar */}
       <aside className="fixed left-0 top-0 h-full w-20 lg:w-64 bg-black/40 backdrop-blur-3xl border-r border-white/5 z-50 flex flex-col transition-all duration-500">
         <div className="p-4 lg:p-8 flex items-center justify-center lg:justify-start gap-3">
           <div className="w-10 h-10 rounded-xl bg-gold flex items-center justify-center shadow-[0_0_20px_rgba(212,175,55,0.3)] flex-shrink-0">
@@ -241,5 +243,3 @@ const AdminOrders = () => {
 };
 
 export default AdminOrders;
-
-

@@ -1,12 +1,14 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { motion, AnimatePresence } from 'framer-motion';
-import { FiShoppingCart, FiTrendingUp, FiAward, FiStar, FiChevronRight, FiPlayCircle } from 'react-icons/fi';
+import { motion } from 'framer-motion';
+import { FiTrendingUp, FiAward, FiStar } from 'react-icons/fi';
 import { toast } from 'react-toastify';
 import axios from 'axios';
+import { ShopContext } from '../context/ShopContext';
 
 const BestSellers = () => {
   const navigate = useNavigate();
+  const { addToCart: contextAddToCart } = useContext(ShopContext);
   const [products, setProducts] = useState([]);
   const [config, setConfig] = useState({
     title: 'THE ELITE',
@@ -19,22 +21,22 @@ const BestSellers = () => {
     const fetchData = async () => {
       try {
         const [resProducts, resConfig] = await Promise.all([
-            axios.get('http://localhost:5000/api/products'),
-            axios.get('http://localhost:5000/api/page-config/bestsellers')
+          axios.get('/api/products'),
+          axios.get('/api/page-config/bestsellers')
         ]);
         
         if (resProducts.data.success) {
-            // Take top 3 for best sellers
-            setProducts(resProducts.data.products.slice(0, 3));
+          setProducts(resProducts.data.products.slice(0, 3));
         }
         if (resConfig.data.config) setConfig(resConfig.data.config);
-      } catch (err) { console.warn('Bestsellers sync failed.'); }
+      } catch (error) { console.warn('Bestsellers sync failed:', error); }
     };
     fetchData();
   }, []);
 
-  const addToCart = (e, productId) => {
+  const handleAddToCart = (e, productId) => {
     e.stopPropagation();
+    contextAddToCart(productId);
     toast.success(`Exclusive Selection: Procured.`, {
       position: 'bottom-right',
       theme: 'dark',
@@ -99,7 +101,7 @@ const BestSellers = () => {
                          <span className="text-xl font-mono">₹{flavor.price}</span>
                       </div>
                    </div>
-                   <button onClick={(e) => addToCart(e, flavor._id || flavor.id)} className="w-full bg-white text-black py-4 uppercase font-black tracking-widest text-xs hover:bg-gold transition-all">Acquire System Selection</button>
+                   <button onClick={(e) => handleAddToCart(e, flavor._id || flavor.id)} className="w-full bg-white text-black py-4 uppercase font-black tracking-widest text-xs hover:bg-gold transition-all">Acquire System Selection</button>
                 </div>
               </div>
             </motion.div>

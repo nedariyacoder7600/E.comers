@@ -1,21 +1,10 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence, useScroll, useTransform } from 'framer-motion';
-import { FiShoppingCart, FiHeart, FiSearch, FiSliders, FiStar, FiHexagon } from 'react-icons/fi';
-import { toast } from 'react-toastify';
+import { FiSearch } from 'react-icons/fi';
 import { ShopContext } from '../context/ShopContext';
 import axios from 'axios';
 import FlavorSidebar from '../components/FlavorSidebar';
-
-// 2030 Hyper-Premium Mock Data
-const allFlavors = [
-  { id: 1, name: 'Quantum Mint', price: '$34.99', category: 'Mint', rating: 4.9, img: 'https://images.unsplash.com/photo-1579546929518-9e396f3cc809?q=80&w=600&auto=format&fit=crop', color: 'from-cyan-500/20 to-blue-600/20' },
-  { id: 2, name: 'Nebula Grape', price: '$39.99', category: 'Fruity', rating: 5.0, img: 'https://images.unsplash.com/photo-1616423640778-28d1b53229bd?q=80&w=600&auto=format&fit=crop', color: 'from-purple-500/20 to-fuchsia-600/20' },
-  { id: 3, name: 'Solar Peach', price: '$32.99', category: 'Fruity', rating: 4.8, img: 'https://images.unsplash.com/photo-1542281286-9e0a16bb7366?q=80&w=600&auto=format&fit=crop', color: 'from-orange-500/20 to-amber-600/20' },
-  { id: 4, name: 'Cyber Apple', price: '$31.99', category: 'Classic', rating: 4.9, img: 'https://images.unsplash.com/photo-1563223771-5fe4038fbfc9?auto=format&fit=crop&q=80&w=600', color: 'from-green-500/20 to-emerald-600/20' },
-  { id: 5, name: 'Holo Vanilla', price: '$35.99', category: 'Creamy', rating: 4.7, img: 'https://images.unsplash.com/photo-1510693539077-4c7fa43fcf83?auto=format&fit=crop&q=80&w=600', color: 'from-zinc-400/20 to-neutral-500/20' },
-  { id: 6, name: 'Neon Berry', price: '$37.99', category: 'Tangy', rating: 4.8, img: 'https://images.unsplash.com/photo-1515276495116-2fd19875f5b2?auto=format&fit=crop&q=80&w=600', color: 'from-pink-500/20 to-rose-600/20' },
-];
 
 const categories = ['All', 'Fruity', 'Mint', 'Creamy', 'Tangy', 'Zesty', 'Classic'];
 const flavorBrands = ['Afzal', 'Maya', 'Al Fakher', 'Starbuzz'];
@@ -45,17 +34,17 @@ const Flavors = () => {
     const fetchData = async () => {
       try {
         const [resProducts, resConfig] = await Promise.all([
-            axios.get('http://localhost:5000/api/products'),
-            axios.get('http://localhost:5000/api/page-config/flavors')
+          axios.get('/api/products'),
+          axios.get('/api/page-config/flavors')
         ]);
 
         if (resProducts.data.success) {
-            setProducts(resProducts.data.products);
+          setProducts(resProducts.data.products);
         }
         if (resConfig.data.config) {
-            setConfig(resConfig.data.config);
+          setConfig(resConfig.data.config);
         }
-      } catch (err) { console.warn('Flavor sync failed.'); }
+      } catch (err) { console.warn('Flavor sync failed:', err); }
     };
     fetchData();
   }, []);
@@ -73,7 +62,6 @@ const Flavors = () => {
     const pName = (flavor.name || flavor.title || '').toLowerCase();
     const pCat = (flavor.category || '');
     
-    // Strict Filter: Only show flavors, exclude pots, coals, etc.
     if (!allFlavorCategories.includes(pCat) && pCat !== 'Flavor') return false;
 
     const matchesCategory = activeCategory === 'All' || pCat === activeCategory;
@@ -178,7 +166,7 @@ const Flavors = () => {
               >
                 <div className="animated-card-inner !bg-[#050505] p-4">
                    <div className="h-48 overflow-hidden rounded-2xl mb-4 relative">
-                     <img src={flavor.img || flavor.image} className="w-full h-full object-cover group-hover:scale-110 transition-all duration-1000" />
+                     <img src={flavor.img || flavor.image} className="w-full h-full object-cover group-hover:scale-110 transition-all duration-1000" alt="" />
                      <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
                    </div>
                    <h3 className="text-sm font-bold text-center group-hover:text-gold uppercase tracking-widest truncate">{flavor.name || flavor.title}</h3>

@@ -13,7 +13,7 @@ const TrackOrder = () => {
   useEffect(() => {
     const fetchOrder = async () => {
       try {
-        const response = await axios.get(`http://localhost:5000/api/orders?t=${new Date().getTime()}`);
+        const response = await axios.get(`/api/orders?t=${new Date().getTime()}`);
         if (response.data.success) {
           const found = response.data.orders.find(o => o._id === id);
           setOrder(found);
@@ -96,7 +96,6 @@ const TrackOrder = () => {
               {steps.map((step, index) => {
                 const isCompleted = index <= currentStepIndex;
                 const isActive = index === currentStepIndex;
-                const isNext = index === currentStepIndex + 1;
 
                 return (
                   <div key={step.name} className="flex flex-col items-center group">

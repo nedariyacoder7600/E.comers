@@ -1,31 +1,42 @@
-import React, { createContext, useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { toast } from 'react-toastify';
 import axios from 'axios';
+import { ShopContext } from './ShopContext';
 
-export const ShopContext = createContext();
+export { ShopContext };
 
 const ShopContextProvider = (props) => {
     const [search, setSearch] = useState('');
     const [showSearch, setShowSearch] = useState(false);
     const [cartItems, setCartItems] = useState({});
     const [token, setToken] = useState(localStorage.getItem('token') || '');
-    const [userData, setUserData] = useState(JSON.parse(localStorage.getItem('userData')) || null);
+    const [userData, setUserData] = useState(() => {
+        try {
+            const saved = localStorage.getItem('userData');
+            return saved ? JSON.parse(saved) : null;
+        } catch {
+            return null;
+        }
+    });
 
     const fetchCartData = async (userToken) => {
         if (!userToken) return;
         try {
-            const response = await axios.get('http://localhost:5000/api/cart', {
+            const response = await axios.get('/api/cart', {
                 headers: { Authorization: `Bearer ${userToken}` }
             });
             if (response.data.success && response.data.cartData) {
                 let cartDataObj = {};
-                response.data.cartData.items.forEach(item => {
-                    cartDataObj[item.product._id || item.product] = item.quantity;
+                (response.data.cartData.items || []).forEach(item => {
+                    if (item.product) {
+                        const pid = item.product._id || item.product;
+                        cartDataObj[pid] = item.quantity;
+                    }
                 });
                 setCartItems(cartDataObj);
             }
         } catch (error) {
-            console.error(error);
+            console.error('Fetch cart error:', error);
         }
     };
 
@@ -53,12 +64,12 @@ const ShopContextProvider = (props) => {
         // Sync with backend only if logged in
         if (token) {
             try {
-                await axios.post('http://localhost:5000/api/cart/add', { productId: itemId }, {
+                await axios.post('/api/cart/add', { productId: itemId }, {
                     headers: { Authorization: `Bearer ${token}` }
                 });
             } catch (error) { console.error('Error syncing cart:', error); }
         }
-    }
+    };
 
     const removeFromCart = async (itemId) => {
         let cartData = structuredClone(cartItems);
@@ -67,24 +78,28 @@ const ShopContextProvider = (props) => {
         }
         setCartItems(cartData);
         
-        try {
-            await axios.post('http://localhost:5000/api/cart/update', { productId: itemId, quantity: cartData[itemId] }, {
-                headers: { Authorization: `Bearer ${token}` }
-            });
-        } catch (error) { console.error('Error syncing cart:', error); }
-    }
+        if (token) {
+            try {
+                await axios.post('/api/cart/update', { productId: itemId, quantity: cartData[itemId] }, {
+                    headers: { Authorization: `Bearer ${token}` }
+                });
+            } catch (error) { console.error('Error syncing cart:', error); }
+        }
+    };
 
     const updateQuantity = async (itemId, quantity) => {
         let cartData = structuredClone(cartItems);
         cartData[itemId] = quantity;
         setCartItems(cartData);
         
-        try {
-            await axios.post('http://localhost:5000/api/cart/update', { productId: itemId, quantity }, {
-                headers: { Authorization: `Bearer ${token}` }
-            });
-        } catch (error) { console.error('Error syncing cart:', error); }
-    }
+        if (token) {
+            try {
+                await axios.post('/api/cart/update', { productId: itemId, quantity }, {
+                    headers: { Authorization: `Bearer ${token}` }
+                });
+            } catch (error) { console.error('Error syncing cart:', error); }
+        }
+    };
 
     const getCartCount = () => {
         let totalCount = 0;
@@ -94,30 +109,31 @@ const ShopContextProvider = (props) => {
             }
         }
         return totalCount;
-    }
+    };
 
     const getCartAmount = (products) => {
         let totalAmount = 0;
         for (const items in cartItems) {
             let itemInfo = products.find((product) => product._id === items || product.id === items);
             if (itemInfo && cartItems[items] > 0) {
-                const price = parseFloat(itemInfo.price.replace(/[^\d.]/g, '')) || 0;
+                const priceStr = String(itemInfo.price || '');
+                const price = parseFloat(priceStr.replace(/[^\d.]/g, '')) || 0;
                 totalAmount += price * cartItems[items];
             }
         }
         return totalAmount;
-    }
+    };
 
     const clearCart = async () => {
         setCartItems({});
         if (token) {
             try {
-                await axios.post('http://localhost:5000/api/cart/clear', {}, {
+                await axios.post('/api/cart/clear', {}, {
                     headers: { Authorization: `Bearer ${token}` }
                 });
             } catch (error) { console.error('Error clearing cart:', error); }
         }
-    }
+    };
 
     const value = {
         search, setSearch,

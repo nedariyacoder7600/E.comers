@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { FiStar, FiTruck, FiChevronRight, FiChevronLeft, FiClock, FiZap, FiShield, FiTrendingUp, FiShoppingBag, FiTag, FiPercent } from 'react-icons/fi';
+import { FiStar, FiTruck, FiChevronRight, FiChevronLeft, FiZap, FiShield, FiShoppingBag, FiTag, FiPercent } from 'react-icons/fi';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -54,8 +54,8 @@ const Home = () => {
     const fetchData = async () => {
       try {
         const [resProducts, resConfig] = await Promise.all([
-          axios.get('http://localhost:5000/api/products'),
-          axios.get('http://localhost:5000/api/page-config/home')
+          axios.get('/api/products'),
+          axios.get('/api/page-config/home')
         ]);
 
         if (resProducts.data.success) {
@@ -111,7 +111,7 @@ const Home = () => {
         <span>Get up to 60% Instant Cashback + Free Express Delivery on orders over ₹499!</span>
       </div>
 
-      {/* 🌟 JAKKAAS HERO BANNER */}
+      {/* 🌟 HERO BANNER */}
       <div className="max-w-[1440px] mx-auto px-4 md:px-8 pt-4 mb-8">
         <div className="bg-gradient-to-r from-slate-900 via-purple-950 to-rose-950 border border-white/10 rounded-3xl flex flex-col md:flex-row items-center justify-between p-6 md:p-12 overflow-hidden relative shadow-2xl">
           
@@ -180,8 +180,8 @@ const Home = () => {
           <div className="relative z-10 w-full md:w-1/2 h-64 md:h-80 flex items-center justify-center">
             <AnimatePresence mode="wait">
               {config.banners.length > 0 && (() => {
-                const currentBanner = config.banners[currentBannerIndex];
-                const bannerImg = typeof currentBanner === 'string' ? currentBanner : currentBanner.img;
+                const banner = config.banners[currentBannerIndex];
+                const bannerImg = typeof banner === 'string' ? banner : banner.img;
 
                 return (
                   <motion.div
@@ -209,7 +209,7 @@ const Home = () => {
         </div>
       </div>
 
-      {/* 🏷️ AMAZON / BAZAAR DEALS MULTI-CARD CAROUSEL (AS IN SCREENSHOT) */}
+      {/* 🏷️ DEALS CAROUSEL */}
       <div className="max-w-[1440px] mx-auto px-4 md:px-8 mb-12">
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-2">
@@ -219,7 +219,6 @@ const Home = () => {
             </h2>
           </div>
 
-          {/* Scroll Buttons */}
           <div className="flex items-center gap-2">
             <button
               onClick={() => scrollDeals('left')}
@@ -236,13 +235,12 @@ const Home = () => {
           </div>
         </div>
 
-        {/* Horizontal Scroll Cards Grid */}
         <div
           ref={dealScrollRef}
           className="flex overflow-x-auto gap-5 pb-4 no-scrollbar scroll-smooth snap-x"
         >
 
-          {/* CARD 1: CASHBACK OFFER TILE GRID */}
+          {/* CARD 1 */}
           <div className="snap-start flex-shrink-0 w-[290px] md:w-[320px] bg-gradient-to-b from-red-600 to-rose-700 rounded-2xl p-5 text-white shadow-lg flex flex-col justify-between relative overflow-hidden">
             <div>
               <div className="inline-block bg-yellow-400 text-black font-extrabold text-[10px] uppercase px-2 py-0.5 rounded mb-2">
@@ -254,7 +252,6 @@ const Home = () => {
               <p className="text-xs text-red-100 mb-4">Lowest prices guaranteed on top items</p>
             </div>
 
-            {/* 3x2 Mini Image Grid */}
             <div className="grid grid-cols-3 gap-2 mb-3">
               {[
                 'https://images.unsplash.com/photo-1527661591475-527312dd65f5?q=80&w=150&auto=format&fit=crop',
@@ -278,12 +275,11 @@ const Home = () => {
             </button>
           </div>
 
-          {/* CARD 2: SHOP POPULAR DEALS (2x2 GRID CARD AS IN SCREENSHOT) */}
+          {/* CARD 2 */}
           <div className="snap-start flex-shrink-0 w-[290px] md:w-[320px] bg-gradient-to-b from-amber-900 to-red-950 rounded-2xl p-5 text-white shadow-lg flex flex-col justify-between">
             <div>
               <h3 className="text-xl font-extrabold mb-3">Shop Popular Deals</h3>
 
-              {/* 2x2 Mini Product Grid */}
               <div className="grid grid-cols-2 gap-2.5 mb-4">
                 {products.slice(0, 4).map((item) => (
                   <div
@@ -315,7 +311,7 @@ const Home = () => {
             </button>
           </div>
 
-          {/* CARD 3: STARTING @ ₹49 BUDGET DEALS */}
+          {/* CARD 3 */}
           <div className="snap-start flex-shrink-0 w-[290px] md:w-[320px] bg-white border border-gray-200 rounded-2xl p-5 shadow-lg flex flex-col justify-between relative overflow-hidden">
             <div>
               <div className="text-2xl font-black text-gray-900 tracking-tight mb-0.5">
@@ -349,7 +345,7 @@ const Home = () => {
             </button>
           </div>
 
-          {/* CARD 4: UNDER ₹399 - POPULAR CATEGORIES */}
+          {/* CARD 4 */}
           <div className="snap-start flex-shrink-0 w-[290px] md:w-[320px] bg-slate-900 text-white rounded-2xl p-5 shadow-lg flex flex-col justify-between">
             <div>
               <div className="text-2xl font-black text-yellow-300 tracking-tight mb-0.5">
@@ -377,7 +373,7 @@ const Home = () => {
             </button>
           </div>
 
-          {/* CARD 5: UNDER ₹799 - LUXURY HOOKAH POTS */}
+          {/* CARD 5 */}
           <div className="snap-start flex-shrink-0 w-[290px] md:w-[320px] bg-gradient-to-b from-blue-900 to-indigo-950 text-white rounded-2xl p-5 shadow-lg flex flex-col justify-between">
             <div>
               <div className="text-2xl font-black text-cyan-300 tracking-tight mb-0.5">
@@ -405,7 +401,7 @@ const Home = () => {
         </div>
       </div>
 
-      {/* 🚀 CIRCULAR CATEGORY HUB */}
+      {/* 🚀 CATEGORY HUB */}
       <div className="max-w-[1440px] mx-auto px-4 md:px-8 mb-12">
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center gap-2">
@@ -442,7 +438,7 @@ const Home = () => {
         </div>
       </div>
 
-      {/* ⚡ FLASH SALE COUNTDOWN BANNER */}
+      {/* ⚡ FLASH SALE */}
       <div className="max-w-[1440px] mx-auto px-4 md:px-8 mb-12">
         <div className="bg-gradient-to-r from-amber-500 via-rose-600 to-purple-700 rounded-2xl p-6 md:p-8 text-white shadow-xl flex flex-col md:flex-row items-center justify-between gap-6">
           <div className="flex items-center gap-4">
@@ -457,7 +453,6 @@ const Home = () => {
             </div>
           </div>
 
-          {/* Countdown Clock */}
           <div className="flex items-center gap-3">
             <div className="bg-black/30 backdrop-blur-md px-4 py-2 rounded-xl text-center border border-white/10">
               <span className="text-xl font-black text-yellow-300 font-mono">0{timeLeft.hours}</span>
@@ -481,7 +476,7 @@ const Home = () => {
         </div>
       </div>
 
-      {/* 🛍️ PRODUCTS FOR YOU MEGA GRID */}
+      {/* 🛍️ PRODUCTS FOR YOU */}
       <div className="max-w-[1440px] mx-auto px-4 md:px-8 mb-12">
         <div className="flex flex-col md:flex-row md:items-center justify-between mb-6 gap-4">
           <div className="flex items-center gap-2">
@@ -491,7 +486,6 @@ const Home = () => {
             </h2>
           </div>
 
-          {/* Filter Pills */}
           <div className="flex items-center gap-2 overflow-x-auto pb-2 no-scrollbar">
             {[
               { id: 'all', label: 'All Items' },
@@ -525,7 +519,6 @@ const Home = () => {
                 onClick={() => navigate(`/product/${product._id}`)}
                 className="bg-white rounded-2xl border border-gray-200/80 overflow-hidden cursor-pointer hover:shadow-xl transition-all duration-300 flex flex-col justify-between group"
               >
-                {/* Image Section */}
                 <div className="h-52 md:h-60 bg-gray-50 flex items-center justify-center p-4 relative overflow-hidden">
                   <img
                     src={product.img}
@@ -554,7 +547,6 @@ const Home = () => {
                   )}
                 </div>
 
-                {/* Details Section */}
                 <div className="p-4 flex flex-col justify-between flex-1">
                   <div>
                     <h3 className="text-sm font-bold text-gray-800 line-clamp-1 mb-2 group-hover:text-rose-600 transition-colors">
@@ -568,14 +560,12 @@ const Home = () => {
                       )}
                     </div>
 
-                    {/* Free Delivery Tag */}
                     <div className="flex items-center w-fit gap-1 bg-emerald-50 text-emerald-700 border border-emerald-100 rounded-md px-2 py-0.5 mb-3">
                       <FiTruck size={12} />
                       <span className="text-[10px] font-bold uppercase">Free Delivery</span>
                     </div>
                   </div>
 
-                  {/* Rating */}
                   <div className="flex items-center justify-between pt-2 border-t border-gray-100 text-xs">
                     <div className="flex items-center gap-1 bg-emerald-600 text-white px-2 py-0.5 rounded-md font-bold text-[11px]">
                       4.8 <FiStar size={10} className="fill-current" />
@@ -589,7 +579,7 @@ const Home = () => {
         )}
       </div>
 
-      {/* 🛡️ TRUST BADGES STRIP */}
+      {/* 🛡️ TRUST BADGES */}
       <div className="max-w-[1440px] mx-auto px-4 md:px-8">
         <div className="bg-white rounded-2xl border border-gray-200 p-6 grid grid-cols-2 md:grid-cols-4 gap-6 text-center shadow-sm">
           <div className="flex flex-col items-center">

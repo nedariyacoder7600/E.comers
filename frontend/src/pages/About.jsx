@@ -1,18 +1,16 @@
-import React, { useRef, useMemo } from 'react';
-import { motion, useScroll, useTransform, useSpring, AnimatePresence } from 'framer-motion';
-import { FiWind, FiZap, FiDribbble, FiAward, FiCpu, FiHardDrive, FiShield, FiTarget } from 'react-icons/fi';
+import React, { useRef } from 'react';
+import { motion, useScroll } from 'framer-motion';
+import { FiZap, FiCpu, FiHardDrive, FiShield } from 'react-icons/fi';
 import { useNavigate } from 'react-router-dom';
 
 const About = () => {
   const navigate = useNavigate();
   const containerRef = useRef(null);
 
-  const { scrollYProgress } = useScroll({
+  useScroll({
     target: containerRef,
     offset: ["start start", "end end"]
   });
-
-  const smoothProgress = useSpring(scrollYProgress, { stiffness: 50, damping: 20 });
 
   const pillars = [
     {
@@ -60,14 +58,12 @@ const About = () => {
           <span className="text-gold uppercase tracking-[1em] text-[10px] font-bold mb-10 block">System 2050 // Singularity</span>
           
           <h1 className="text-[12vw] font-bold tracking-tighter leading-none mb-10 relative group">
-            {/* Scramble Effect Container */}
             <motion.span 
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               className="block relative"
             >
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-white via-zinc-500 to-white relative z-10">
-                {/* Custom Decoding Animation */}
                 {Array.from("BEYOND").map((char, i) => (
                   <motion.span
                     key={i}
@@ -96,7 +92,6 @@ const About = () => {
                 ))}
               </span>
               
-              {/* Glitch Overlay 1 */}
               <motion.span 
                 animate={{ 
                   x: [-2, 2, -2],
@@ -123,7 +118,7 @@ const About = () => {
         </motion.div>
       </section>
 
-      {/* 🎨 COLOR CARDS SECTION: Restoring the requested aesthetic */}
+      {/* 🎨 COLOR CARDS SECTION */}
       <section className="py-40 relative z-10">
         <div className="max-w-7xl mx-auto px-4">
           <div className="text-center mb-28">
@@ -157,7 +152,6 @@ const About = () => {
                     {pillar.description}
                   </p>
                   
-                  {/* Glowing Bottom Indicator */}
                   <div className={`absolute bottom-0 left-0 h-[2px] w-0 bg-gradient-to-r ${pillar.color} group-hover:w-full transition-all duration-700`} />
                 </div>
               </motion.div>

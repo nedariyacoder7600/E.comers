@@ -1,21 +1,43 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { motion } from 'framer-motion';
 import { Link, useNavigate } from 'react-router-dom';
 import { FiMail, FiLock, FiArrowRight, FiUser, FiAperture } from 'react-icons/fi';
 import { GiSmokingPipe } from 'react-icons/gi';
 import { toast } from 'react-toastify';
+import axios from 'axios';
+import { ShopContext } from '../context/ShopContext';
 
 const Register = () => {
+  const { setToken, setUserData } = useContext(ShopContext);
   const [formData, setFormData] = useState({ name: '', email: '', password: '', confirmPassword: '' });
   const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if(formData.password !== formData.confirmPassword) {
       return toast.error('Security Breach: Keys do not match.');
     }
-    toast.success('Registration successful. Welcome to the Collective.');
-    setTimeout(() => navigate('/login'), 1500);
+    
+    try {
+      const response = await axios.post('/api/auth/register', {
+        name: formData.name,
+        email: formData.email,
+        password: formData.password
+      });
+
+      if (response.data.success) {
+        if (response.data.token) {
+          localStorage.setItem('token', response.data.token);
+          localStorage.setItem('userData', JSON.stringify(response.data.user));
+          setToken(response.data.token);
+          setUserData(response.data.user);
+        }
+        toast.success('Registration successful. Welcome to the Collective.');
+        setTimeout(() => navigate('/'), 1500);
+      }
+    } catch (error) {
+      toast.error(error.response?.data?.message || 'Registration failed.');
+    }
   };
 
   return (

@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { motion, AnimatePresence } from 'framer-motion';
-import { FiShoppingCart, FiArrowLeft, FiStar, FiShield, FiTruck, FiRefreshCw, FiMinus, FiPlus, FiHeart } from 'react-icons/fi';
+import { motion } from 'framer-motion';
+import { FiShoppingCart, FiArrowLeft, FiStar, FiShield, FiTruck, FiMinus, FiPlus, FiHeart } from 'react-icons/fi';
 import { ShopContext } from '../context/ShopContext';
 import axios from 'axios';
 import { toast } from 'react-toastify';
@@ -21,7 +21,7 @@ const ProductDetail = () => {
   useEffect(() => {
     const fetchProduct = async () => {
       try {
-        const response = await axios.get(`http://localhost:5000/api/products/${id}`);
+        const response = await axios.get(`/api/products/${id}`);
         if (response.data.success) {
           const prod = response.data.product;
           setProduct(prod);
@@ -159,13 +159,11 @@ const ProductDetail = () => {
               {product.description || "A masterfully engineered blend designed for the most discerning connoisseurs. Part of our elite sensory collection."}
             </p>
 
-            {/* Premium Checkout Card (Amazon Style but Dark/Gold) */}
+            {/* Premium Checkout Card */}
             <div className="bg-gradient-to-b from-white/[0.03] to-black border border-white/10 rounded-3xl p-8 mb-8 relative overflow-hidden group">
-              {/* Glow Effect */}
               <div className="absolute -top-24 -right-24 w-48 h-48 bg-gold/10 rounded-full blur-3xl group-hover:bg-gold/20 transition-all duration-700"></div>
               
               <div className="relative z-10">
-                {/* Price & Offers */}
                 <div className="mb-6">
                   <div className="flex items-end gap-3 mb-2">
                     <span className="text-5xl font-bold text-white font-mono tracking-tighter">₹{product.price}</span>
@@ -183,7 +181,6 @@ const ProductDetail = () => {
                   <p className="text-xs text-gray-400 leading-relaxed">Bank Offer: Get 5% cashback with Elite Cards. <span className="text-gold cursor-pointer hover:underline">Details</span></p>
                 </div>
 
-                {/* Delivery & Stock */}
                 <div className="mb-6 border-b border-white/10 pb-6">
                   <div className="flex items-start gap-4 mb-5">
                     <div className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center text-gold shrink-0">
@@ -204,7 +201,6 @@ const ProductDetail = () => {
                   </div>
                 </div>
 
-                {/* Controls */}
                 <div className="space-y-4">
                   <div className="flex items-center gap-4 mb-2">
                     <span className="text-sm text-gray-400 uppercase tracking-widest">Quantity:</span>

@@ -2,18 +2,17 @@ import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { 
   FiPieChart, FiShoppingBag, FiUsers, FiBox, 
-  FiMoreVertical, FiTrendingUp, FiArrowUpRight, 
-  FiArrowDownRight, FiSearch, FiBell, FiSettings,
+  FiTrendingUp, FiArrowUpRight, 
+  FiSearch, FiBell, FiSettings,
   FiLogOut, FiLayout, FiTrash2
 } from 'react-icons/fi';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { 
   AreaChart, Area, XAxis, YAxis, CartesianGrid, 
   Tooltip, ResponsiveContainer, PieChart, Pie, Cell 
 } from 'recharts';
 
-// Futuristic Mock Data
 const revenueData = [
   { name: 'Jan', revenue: 45000 },
   { name: 'Feb', revenue: 52000 },
@@ -37,18 +36,16 @@ const Dashboard = () => {
   const [activeTab, setActiveTab] = useState('Overview');
   const [orders, setOrders] = useState([]);
   const [products, setProducts] = useState([]);
-  const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
   const fetchData = async () => {
     try {
       const [resOrders, resProducts] = await Promise.all([
-        axios.get('http://localhost:5000/api/orders'),
-        axios.get('http://localhost:5000/api/products')
+        axios.get('/api/orders'),
+        axios.get('/api/products')
       ]);
       if (resOrders.data.success) setOrders(resOrders.data.orders);
       if (resProducts.data.success) setProducts(resProducts.data.products);
-      setLoading(false);
     } catch (error) {
       console.error("Dashboard error", error);
     }
@@ -61,7 +58,7 @@ const Dashboard = () => {
   const deleteOrder = async (orderId) => {
     if (!window.confirm("Purge this transmission from the matrix?")) return;
     try {
-      const response = await axios.delete(`http://localhost:5000/api/orders/${orderId}`);
+      const response = await axios.delete(`/api/orders/${orderId}`);
       if (response.data.success) {
         setOrders(prev => prev.filter(order => order._id !== orderId));
       }
@@ -83,7 +80,7 @@ const Dashboard = () => {
   return (
     <div className="flex h-screen overflow-hidden bg-[#050505] text-gray-100 font-sans">
       
-      {/* Sidebar - Futuristic Glassmorphism Responsive */}
+      {/* Sidebar */}
       <aside className="fixed left-0 top-0 h-full w-20 lg:w-64 bg-black/40 backdrop-blur-3xl border-r border-white/5 z-50 flex flex-col transition-all duration-500">
         <div className="p-4 lg:p-8 flex items-center justify-center lg:justify-start gap-3">
           <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-gold to-gold-light flex items-center justify-center shadow-[0_0_20px_rgba(212,175,55,0.4)] flex-shrink-0">
@@ -127,7 +124,7 @@ const Dashboard = () => {
         </div>
       </aside>
 
-      {/* Main Content - Fixed Screen Layout */}
+      {/* Main Content */}
       <main className="flex-grow ml-20 lg:ml-64 p-4 lg:p-6 h-screen overflow-hidden flex flex-col">
         
         {/* Header */}

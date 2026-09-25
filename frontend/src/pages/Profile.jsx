@@ -1,9 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { 
-  FiUser, FiMail, FiMapPin, FiPackage, 
-  FiSettings, FiLogOut, FiEdit3, FiShield,
-  FiClock, FiStar, FiChevronRight, FiCheckCircle
+  FiPackage, FiClock, FiStar
 } from 'react-icons/fi';
 import { GiSmokingPipe } from 'react-icons/gi';
 import { ShopContext } from '../context/ShopContext';
@@ -24,7 +22,7 @@ const Profile = () => {
 
     const fetchOrders = async () => {
       try {
-        const response = await axios.get('http://localhost:5000/api/orders/my', {
+        const response = await axios.get('/api/orders/my', {
           headers: { Authorization: `Bearer ${token}` }
         });
         if (response.data.success) {
@@ -56,9 +54,13 @@ const Profile = () => {
     );
   }
 
+  const memberSinceDate = userData?.createdAt 
+    ? new Date(userData.createdAt).toLocaleDateString('en-US', { month: 'short', year: 'numeric' })
+    : 'Member';
+
   const stats = [
     { label: 'Total Orders', value: orders.length, icon: <FiPackage className="text-gold" /> },
-    { label: 'Member Since', value: new Date(userData?.createdAt || Date.now()).toLocaleDateString('en-US', { month: 'short', year: 'numeric' }), icon: <FiClock className="text-purple-400" /> },
+    { label: 'Member Since', value: memberSinceDate, icon: <FiClock className="text-purple-400" /> },
     { label: 'Tier Status', value: userData?.role === 'admin' ? 'Master Admin' : 'VIP Client', icon: <FiStar className="text-pink-400" /> },
   ];
 
@@ -155,12 +157,11 @@ const Profile = () => {
             
             {/* Stats Summary */}
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-               {stats.concat({ label: 'Vault Credit', value: '₹12,400', icon: <FiStar className="text-gold" /> }).map((stat, i) => (
+               {stats.concat({ label: 'Vault Credit', value: '₹12,400', icon: <FiStar className="text-gold" /> }).map((stat) => (
                  <motion.div 
                    key={stat.label}
                    initial={{ opacity: 0, y: 20 }}
                    animate={{ opacity: 1, y: 0 }}
-                   transition={{ delay: i * 0.1 }}
                    className="bg-black/40 backdrop-blur-xl border border-white/5 p-6 rounded-3xl group hover:border-gold/30 transition-all"
                  >
                    <div className="text-xl mb-3 group-hover:scale-110 transition-transform duration-300">{stat.icon}</div>
@@ -215,20 +216,6 @@ const Profile = () => {
                   ))}
                 </div>
               )}
-            </div>
-
-            {/* Quick Controls */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-4">
-               {[
-                 { label: 'Security Protocols', icon: <FiShield />, color: 'text-emerald-400' },
-                 { label: 'Neural Settings', icon: <FiSettings />, color: 'text-gold' },
-                 { label: 'Support Channel', icon: <FiMail />, color: 'text-blue-400' }
-               ].map((ctrl) => (
-                 <button key={ctrl.label} className="flex items-center gap-4 p-5 bg-black/40 border border-white/5 rounded-3xl hover:bg-white/[0.02] hover:border-white/10 transition-all text-left group">
-                    <span className={`${ctrl.color} text-xl group-hover:scale-110 transition-transform`}>{ctrl.icon}</span>
-                    <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest group-hover:text-white">{ctrl.label}</span>
-                 </button>
-               ))}
             </div>
 
           </div>

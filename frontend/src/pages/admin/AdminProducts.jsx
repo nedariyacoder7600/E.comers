@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { FiPlus, FiTrash2, FiPackage, FiSearch, FiArrowLeft, FiImage, FiMapPin, FiWind, FiUploadCloud, FiEdit, FiX } from 'react-icons/fi';
+import { FiPlus, FiTrash2, FiPackage, FiArrowLeft, FiImage, FiWind, FiUploadCloud, FiEdit, FiX } from 'react-icons/fi';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 import { toast } from 'react-toastify';
@@ -27,10 +27,11 @@ const AdminProducts = () => {
 
   const fetchProducts = async () => {
     try {
-      const response = await axios.get('http://localhost:5000/api/products');
+      const response = await axios.get('/api/products');
       setProducts(response.data.products);
       setLoading(false);
     } catch (error) {
+      console.error(error);
       toast.error('Failed to sync with global product mesh.');
       setLoading(false);
     }
@@ -49,7 +50,7 @@ const AdminProducts = () => {
 
     try {
       toast.info('Synchronizing asset to neural core...');
-      const res = await axios.post('http://localhost:5000/api/upload', formData, {
+      const res = await axios.post('/api/upload', formData, {
         headers: { 'Content-Type': 'multipart/form-data' }
       });
       setNewProduct({ ...newProduct, [field]: res.data.imageUrl });
@@ -70,7 +71,7 @@ const AdminProducts = () => {
 
     try {
       toast.info('Synchronizing color asset...');
-      const res = await axios.post('http://localhost:5000/api/upload', formData, {
+      const res = await axios.post('/api/upload', formData, {
         headers: { 'Content-Type': 'multipart/form-data' }
       });
       const updatedColors = [...(newProduct.colors || [])];
@@ -78,6 +79,7 @@ const AdminProducts = () => {
       setNewProduct({ ...newProduct, colors: updatedColors });
       toast.success('Color asset synced.');
     } catch (err) {
+      console.error(err);
       toast.error('Color sync failed.');
     }
   };
@@ -102,10 +104,10 @@ const AdminProducts = () => {
     e.preventDefault();
     try {
       if (editId) {
-        await axios.put(`http://localhost:5000/api/products/${editId}`, newProduct);
+        await axios.put(`/api/products/${editId}`, newProduct);
         toast.success('Asset successfully modified in database.');
       } else {
-        await axios.post('http://localhost:5000/api/products', newProduct);
+        await axios.post('/api/products', newProduct);
         toast.success('Asset successfully initialized in database.');
       }
       setShowAddForm(false);
@@ -113,6 +115,7 @@ const AdminProducts = () => {
       setNewProduct({ name: '', price: '', category: 'Hookah Pot', img: '', img2: '', img3: '', img4: '', description: '', originalPrice: '', inStock: true, stockLabel: 'Out of Stock', colors: [] });
       fetchProducts();
     } catch (error) {
+      console.error(error);
       toast.error('Failed to manifest product entity.');
     }
   };
@@ -138,10 +141,11 @@ const AdminProducts = () => {
 
   const handleDelete = async (id) => {
     try {
-      await axios.delete(`http://localhost:5000/api/products/${id}`);
+      await axios.delete(`/api/products/${id}`);
       toast.success('Asset terminated from system.');
       fetchProducts();
     } catch (error) {
+      console.error(error);
       toast.error('Termination failed.');
     }
   };
@@ -340,7 +344,7 @@ const AdminProducts = () => {
                           <div className="flex-grow flex flex-col">
                             <input required={imgField.required} className="bg-transparent border-none focus:ring-0 text-[11px] outline-none text-white w-full" placeholder={`URL for ${imgField.label}`} value={newProduct[imgField.field]} onChange={(e) => setNewProduct({...newProduct, [imgField.field]: e.target.value})} />
                           </div>
-                          {newProduct[imgField.field] && <img src={newProduct[imgField.field]} className="w-10 h-10 rounded-xl object-cover border border-white/10 flex-shrink-0" />}
+                          {newProduct[imgField.field] && <img src={newProduct[imgField.field]} className="w-10 h-10 rounded-xl object-cover border border-white/10 flex-shrink-0" alt="" />}
                           <label className="cursor-pointer bg-white/5 text-gray-400 p-3 rounded-xl hover:bg-gold hover:text-black transition-all flex-shrink-0">
                             <FiUploadCloud />
                             <input type="file" className="hidden" onChange={(e) => handleFileChange(e, imgField.field)} accept="image/*" />
@@ -383,7 +387,7 @@ const AdminProducts = () => {
                               <FiUploadCloud />
                               <input type="file" className="hidden" onChange={(e) => handleColorImageUpload(e, index)} accept="image/*" />
                             </label>
-                            {color.imageUrl && <img src={color.imageUrl} className="w-10 h-10 rounded-xl object-cover border border-white/10 shadow-lg flex-shrink-0" />}
+                            {color.imageUrl && <img src={color.imageUrl} className="w-10 h-10 rounded-xl object-cover border border-white/10 shadow-lg flex-shrink-0" alt="" />}
                           </div>
                           <button type="button" onClick={() => removeColorVariant(index)} className="absolute right-0 top-0 bottom-0 px-4 bg-red-500/10 text-red-500 hover:bg-red-500 hover:text-white transition-all translate-x-full group-hover:translate-x-0 font-bold backdrop-blur-md">
                             <FiTrash2 size={18} />
